@@ -1,0 +1,180 @@
+openapi: 3.1.0
+info:
+  title: JurisRAG API
+  version: 0.1.0
+  description: Consulta autenticada de documentos jurídicos sintéticos com citações rastreáveis.
+servers:
+  - url: http://localhost:8080
+security:
+  - bearerAuth: []
+paths:
+  /v1/documents:
+    post:
+      summary: Envia um PDF para ingestão assíncrona
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file, title]
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: PDF de até 10 MiB, com assinatura PDF válida.
+                title:
+                  type: string
+                  maxLength: 200
+      responses:
+        '202':
+          description: Documento gravado como PENDING e enviado à fila.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadResponse'
+        '400':
+          $ref: '#/components/responses/Problem'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '413':
+          $ref: '#/components/responses/Problem'
+        '503':
+          $ref: '#/components/responses/Problem'
+  /v1/documents/{id}:
+    get:
+      summary: Consulta o estado de um documento do tenant autenticado
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Estado atual do documento.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentStatus'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '404':
+          $ref: '#/components/responses/Problem'
+  /v1/queries:
+    post:
+      summary: Consulta o acervo do tenant e retorna evidências verificáveis
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QueryRequest'
+      responses:
+        '200':
+          description: Resposta fundamentada ou abstenção de negócio.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryResponse'
+        '400':
+          $ref: '#/components/responses/Problem'
+        '401':
+          $ref: '#/components/responses/Problem'
+        '503':
+          $ref: '#/components/responses/Problem'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  responses:
+    Problem:
+      description: Erro HTTP no formato Problem Details.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+  schemas:
+    UploadResponse:
+      type: object
+      required: [documentId, statusUrl]
+      properties:
+        documentId:
+          type: string
+          format: uuid
+        statusUrl:
+          type: string
+    DocumentStatus:
+      type: object
+      required: [documentId, title, status, updatedAt]
+      properties:
+        documentId:
+          type: string
+          format: uuid
+        title:
+          type: string
+        status:
+          type: string
+          enum: [PENDING, READY, FAILED]
+        updatedAt:
+          type: string
+          format: date-time
+    QueryRequest:
+      type: object
+      required: [question]
+      properties:
+        question:
+          type: string
+          minLength: 1
+          maxLength: 2000
+    QueryResponse:
+      type: object
+      required: [status, answer, citations, attempts, rewritten]
+      properties:
+        status:
+          type: string
+          enum: [ANSWERED, INSUFFICIENT_EVIDENCE]
+        answer:
+          type: string
+        citations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Citation'
+        attempts:
+          type: integer
+          minimum: 1
+          maximum: 2
+        rewritten:
+          type: boolean
+    Citation:
+      type: object
+      required: [documentId, title, page, excerpt]
+      properties:
+        documentId:
+          type: string
+          format: uuid
+        title:
+          type: string
+        page:
+          type: integer
+          minimum: 1
+        excerpt:
+          type: string
+    ProblemDetail:
+      type: object
+      properties:
+        type:
+          type: string
+          format: uri
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+        instance:
+          type: string
+          format: uri-reference

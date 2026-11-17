@@ -1,0 +1,46 @@
+[
+  {
+    "file": "contrato-001.pdf",
+    "title": "Contrato 001 — Fornecimento",
+    "tenant": "energia-demo",
+    "pages": [
+      [
+        "Contrato 001 — Fornecimento de energia",
+        "Cláusula 4.2 — Pagamento da fatura",
+        "O prazo para pagamento da fatura será de 30 dias corridos após o recebimento da fatura."
+      ],
+      [
+        "Contrato 001 — Condições de duração",
+        "Cláusula 12.1 — Resilição unilateral sem motivação",
+        "Qualquer das partes poderá resilir unilateralmente sem justa causa, mediante notificação prévia com prazo mínimo de 90 dias contados do recebimento."
+      ]
+    ]
+  },
+  {
+    "file": "aditivo-001.pdf",
+    "title": "Aditivo 01 — Contrato 001",
+    "tenant": "energia-demo",
+    "pages": [
+      [
+        "Aditivo 01 ao Contrato 001",
+        "Cláusula 1.1 — Alteração da cláusula de resilição",
+        "Este aditivo altera a Cláusula 12.1 do Contrato 001. O prazo de notificação passa de 90 para 60 dias corridos.",
+        "Vigência a partir de 01/10/2026."
+      ]
+    ]
+  },
+  {
+    "file": "contrato-001-outro-tenant.pdf",
+    "title": "Contrato 001 — Fornecimento (tenant B)",
+    "tenant": "energia-outro",
+    "pages": [
+      [
+        "Contrato 001 — Fornecimento de energia — tenant B",
+        "Cláusula 4.2 — Pagamento da fatura",
+        "O prazo para pagamento da fatura será de 7 dias úteis após o recebimento da fatura.",
+        "Cláusula 12.1 — Resilição unilateral",
+        "O prazo de notificação é de 15 dias corridos."
+      ]
+    ]
+  }
+]

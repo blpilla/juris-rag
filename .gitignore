@@ -1,0 +1,13 @@
+.env
+.env.*
+!.env.example
+.local/
+target/
+*.log
+*.pdf.tmp
+__pycache__/
+*.py[cod]
+.DS_Store
+.idea/
+.vscode/
+.pytest_cache/

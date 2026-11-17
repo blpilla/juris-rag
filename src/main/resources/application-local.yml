@@ -1,0 +1,12 @@
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/jurisrag}
+
+juris-rag:
+  aws:
+    sqs-endpoint: ${SQS_ENDPOINT:http://localhost:9324}
+  jwt:
+    public-key-path: ${JWT_PUBLIC_KEY_PATH:file:.local/jwt-public.pem}

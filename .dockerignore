@@ -1,0 +1,10 @@
+.env
+.local/
+.git/
+.github/
+.mvn/wrapper/maven-wrapper.jar
+**/target/
+portfolio-publico/
+fixtures/
+scripts/
+*.log
